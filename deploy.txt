@@ -1,0 +1,20 @@
+token
+
+1. deploy `Token.sol` implementation with no args
+2. deploy `ERC1967Proxy.sol` with args:
+  - `_logic` is the address of the implementation
+  - to call the implementation's `initialize` function (without args), use `_data` `0x8129fc1c`
+3. add new roles if needed
+
+new implementation
+
+1. deploy `TokenVX.sol` implementation with no args
+2. call `upgradeTo` function to the new implementation
+
+distributor
+
+1. deploy `Distributor.sol` no args
+2. set token options
+3. set buy options
+4. set airdrop merkle root
+5. add mint role on token to distributor

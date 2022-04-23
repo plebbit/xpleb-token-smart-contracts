@@ -54,6 +54,15 @@ contract Distributor is Ownable, ReentrancyGuard {
         emit Buy(msg.sender, amount);
     }
 
+    // owner can buy for free in case there's a mistake with airdrop
+    function ownerBuy(uint256 amount) external onlyOwner {
+        int256 i = int256(amount);
+        while (i-- > 0) {
+            _buyMint(msg.sender);
+        }
+        emit Buy(msg.sender, amount);
+    }
+
     function _buyMint(address to) private {
         uint256 tokenId = token.totalSupply();
         require(tokenId <= maxSupply, '_buyMint: max supply reached');

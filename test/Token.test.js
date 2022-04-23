@@ -195,8 +195,15 @@ describe('Token', function () {
     balance = (await ethers.provider.getBalance(artistWallet)).toString()
     expect(balance).to.equal('0')
 
+    // test owner buy
+    await expectRevert(
+      distributor.connect(user1).ownerBuy(5),
+      'Ownable: caller is not the owner'
+    )
+    await distributor.ownerBuy(5)
+
     // buy all
-    await distributor.connect(user4).buy(15, {value: price * 15})
+    await distributor.connect(user4).buy(10, {value: price * 10})
     await distributor.connect(user4).buy(10, {value: price * 10})
     await distributor.connect(user4).buy(5, {value: price * 5})
     await distributor.connect(user5).buy(2, {value: price * 2})
@@ -212,15 +219,17 @@ describe('Token', function () {
 
     // check burn and artist balance after
     balance = (await ethers.provider.getBalance(burnWallet)).toString()
-    expect(balance).to.equal('38000')
+    expect(balance).to.equal('33250')
     balance = (await ethers.provider.getBalance(artistWallet)).toString()
-    expect(balance).to.equal('2000')
+    expect(balance).to.equal('1750')
 
     // check what was minted
     totalSupply = (await proxy.totalSupply()).toString()
     expect(totalSupply).to.equal('90')
+    balance = (await proxy.balanceOf(owner.address)).toString()
+    expect(balance).to.equal('5')
     balance = (await proxy.balanceOf(user4.address)).toString()
-    expect(balance).to.equal('30')
+    expect(balance).to.equal('25')
     balance = (await proxy.balanceOf(user5.address)).toString()
     expect(balance).to.equal('2')
     balance = (await proxy.balanceOf(user6.address)).toString()
@@ -231,7 +240,7 @@ describe('Token', function () {
     proof = merkleTree.getHexProof(leaf)
     await distributor.connect(owner).claimAirdrop('10', proof)
     balance = (await proxy.balanceOf(owner.address)).toString()
-    expect(balance).to.equal('10')
+    expect(balance).to.equal('15')
     totalSupply = (await proxy.totalSupply()).toString()
     expect(totalSupply).to.equal('100')
   })

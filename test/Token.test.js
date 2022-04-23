@@ -51,11 +51,19 @@ describe('Token', function () {
     const distributor = await Distributor.deploy()
     const maxSupply = 100
     const maxBuyable = 40
+    await expectRevert(
+      distributor.connect(user1).setTokenOptions(proxy.address, maxSupply),
+      'Ownable: caller is not the owner'
+    )
     await distributor.setTokenOptions(proxy.address, maxSupply)
     const price = 1000
     const artistPercent = 5
     const burnWallet = '0x000000000000000000000000000000000000000b'
     const artistWallet = '0x000000000000000000000000000000000000000a'
+    await expectRevert(
+      distributor.connect(user1).setBuyOptions(price, maxBuyable, burnWallet, artistWallet, artistPercent),
+      'Ownable: caller is not the owner'
+    )
     await distributor.setBuyOptions(price, maxBuyable, burnWallet, artistWallet, artistPercent)
 
     // make sure no mint functions are public
@@ -93,6 +101,10 @@ describe('Token', function () {
     )
 
     // set airdrop merkle root
+    await expectRevert(
+      distributor.connect(user1).setAirdropMerkleRoot(root),
+      'Ownable: caller is not the owner'
+    )
     await distributor.setAirdropMerkleRoot(root)
     expect(await distributor.airdropMerkleRoot()).to.equal(root)
 

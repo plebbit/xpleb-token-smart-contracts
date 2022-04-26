@@ -1,6 +1,6 @@
 token
 
-1. deploy `Token.sol` implementation with no args
+1. deploy `Token.sol` implementation with no args from metamask wallet
 2. deploy `ERC1967Proxy.sol` with args:
   - `_logic` is the address of the implementation
   - to call the implementation's `initialize` function (without args), use `_data` `0x8129fc1c`
@@ -18,3 +18,8 @@ distributor
 3. set buy options
 4. set airdrop merkle root
 5. add mint role on token to distributor
+
+roles
+
+1. add DEFAULT_ADMIN_ROLE, UPGRADER_ROLE and MINTER_ROLE to PLEB deployer
+2. remove DEFAULT_ADMIN_ROLE, UPGRADER_ROLE and MINTER_ROLE from metamask wallet

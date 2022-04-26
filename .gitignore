@@ -2,5 +2,6 @@
 artifacts/
 cache/
 scripts/recipients.json
+scripts/seed.js
 node_modules/
 TODO.md

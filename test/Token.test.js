@@ -197,10 +197,10 @@ describe('Token', function () {
 
     // test owner buy
     await expectRevert(
-      distributor.connect(user1).ownerBuy(5),
+      distributor.connect(user1).ownerBuy(5, user1.address),
       'Ownable: caller is not the owner'
     )
-    await distributor.ownerBuy(5)
+    await distributor.ownerBuy(5, owner.address)
 
     // buy all
     await distributor.connect(user4).buy(10, {value: price * 10})

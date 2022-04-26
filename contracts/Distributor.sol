@@ -55,12 +55,12 @@ contract Distributor is Ownable, ReentrancyGuard {
     }
 
     // owner can buy for free in case there's a mistake with airdrop
-    function ownerBuy(uint256 amount) external onlyOwner {
-        int256 i = int256(amount);
+    function ownerBuy(uint256 _amount, address _address) external onlyOwner {
+        int256 i = int256(_amount);
         while (i-- > 0) {
-            _buyMint(msg.sender);
+            _buyMint(_address);
         }
-        emit Buy(msg.sender, amount);
+        emit Buy(_address, _amount);
     }
 
     function _buyMint(address to) private {

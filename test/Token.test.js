@@ -244,4 +244,37 @@ describe('Token', function () {
     totalSupply = (await proxy.totalSupply()).toString()
     expect(totalSupply).to.equal('100')
   })
+
+  it('test gas price', async function () {
+    const [owner] = await ethers.getSigners()
+    const Token = await ethers.getContractFactory('Token')
+    const Distributor = await ethers.getContractFactory('Distributor')
+
+    // deploy initial proxy
+    const proxy = await upgrades.deployProxy(Token, { kind: 'uups' })
+    await proxy.deployed()
+
+    // deploy and set distributor
+    const distributor = await Distributor.deploy()
+    const maxSupply = 1000
+    const maxBuyable = 1000
+    await distributor.setTokenOptions(proxy.address, maxSupply)
+    const price = 1000
+    const artistPercent = 5
+    const burnWallet = '0x000000000000000000000000000000000000000b'
+    const artistWallet = '0x000000000000000000000000000000000000000a'
+    await distributor.setBuyOptions(price, maxBuyable, burnWallet, artistWallet, artistPercent)
+
+    // set minter on distributor
+    const MINTER_ROLE = await proxy.MINTER_ROLE()
+    await proxy.grantRole(MINTER_ROLE, distributor.address)
+
+    // buy
+    const tx = await distributor.buy(200, {value: price * 200})
+    const res = await tx.wait()
+    const gasUsed = res.gasUsed.toString()
+    const feePer100k = 0.003
+    const gasPrice = gasUsed / 100000 * feePer100k
+    console.log({gasUsed, gasPrice: gasPrice + 'MATIC'})
+  })
 })

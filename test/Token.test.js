@@ -243,6 +243,20 @@ describe('Token', function () {
     expect(balance).to.equal('15')
     totalSupply = (await proxy.totalSupply()).toString()
     expect(totalSupply).to.equal('100')
+
+    // add admin role to someone else and then remove it from owner
+    const DEFAULT_ADMIN_ROLE = await proxy.DEFAULT_ADMIN_ROLE()
+    const UPGRADER_ROLE = await proxy.UPGRADER_ROLE()
+    await proxy.grantRole(DEFAULT_ADMIN_ROLE, user1.address)
+    await proxy.grantRole(UPGRADER_ROLE, user1.address)
+    await proxy.grantRole(MINTER_ROLE, user1.address)
+    await proxy.connect(user1).revokeRole(DEFAULT_ADMIN_ROLE, owner.address)
+    await proxy.connect(user1).revokeRole(UPGRADER_ROLE, owner.address)
+    await proxy.connect(user1).revokeRole(MINTER_ROLE, owner.address)
+    await expectRevert(
+      proxy.grantRole(MINTER_ROLE, user2.address),
+      'AccessControl: account 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 is missing role 0x0000000000000000000000000000000000000000000000000000000000000000'
+    )
   })
 
   it('test gas price', async function () {

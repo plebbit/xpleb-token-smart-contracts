@@ -39,6 +39,12 @@ const deployDistributor = async () => {
   return distributor
 }
 
+const deployMulticall = async () => {
+  const Multicall = await ethers.getContractFactory('Multicall')
+  const multicall = await Multicall.deploy()
+  return multicall
+}
+
 setInterval(() => {
   ethers.provider.send('evm_mine')
 }, 5000)
@@ -48,6 +54,7 @@ setInterval(() => {
   const token = await deployToken()
   const distributor = await deployDistributor()
   const metamaskWallets = await getMetamaskWallets()
+  const multicall = await deployMulticall()
 
   // set minter on distributor
   const MINTER_ROLE = await token.MINTER_ROLE()
@@ -71,7 +78,9 @@ setInterval(() => {
   "chainId": 31337,
   "providerUrl": "http://localhost:8545",
   "xplebTokenAddress": "${token.address}",
-  "distributorAddress": "${distributor.address}"
+  "distributorAddress": "${distributor.address}",
+  "multicallAddress": "${multicall.address}",
+  "price": "${price}"
 }
 `)
   console.log('setup finished')

@@ -17,6 +17,7 @@
     "@openzeppelin/test-helpers": "0.5.15",
     "chai": "4.3.4",
     "chai-as-promised": "7.1.1",
+    "cross-fetch": "^3.1.5",
     "ethers": "5.5.1",
     "keccak256": "1.0.3",
     "merkletreejs": "0.2.24"
